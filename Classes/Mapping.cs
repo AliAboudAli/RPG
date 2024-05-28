@@ -97,7 +97,7 @@ namespace RpgGame.Classes
         // Start het verhaal door de speler uit te nodigen om te reizen.
         public void StartStory()
         {
-            Story story = new Story(user.Name);
+            Console.WriteLine("Welcome to ShrekLand");
             Travel();
         }
 
@@ -234,6 +234,7 @@ namespace RpgGame.Classes
             }
         }
         // methode voor output als de speler door wilt gaan 
+        
         private void ExamineLocation(string location)
         {
             Console.WriteLine($"You are at {location}. What would you like to do?");

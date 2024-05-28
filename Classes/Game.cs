@@ -52,6 +52,7 @@ public class Game
 
     private int GetValidInput(int minValue, int maxValue)
     {
+        Console.WriteLine("Get Valid Input function was called!");
         int chosing;
         while (true)
         {
@@ -107,11 +108,12 @@ public class Game
         // Start de hoofdlus voor spelersacties.
         while (true)
         {
+            
             Console.WriteLine($"You are currently in: {map.CurrentLocation}");
             Console.WriteLine("1. Travel to a new location");
             Console.WriteLine("2. Visit the shop");
             Console.WriteLine("3. Display player information");
-
+            Console.ReadLine();
             int choice = GetValidInput(1, 3);
 
             switch (choice)
