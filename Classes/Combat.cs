@@ -20,7 +20,7 @@ namespace RpgGame.Classes
         public int MaxDamage { get; set; }
 
         // Referentie naar de spelerobject en het spelobject.
-        private Speler user;
+        private Player user;
         private Game game = new Game();
 
         // Constructor om het Combat object te initialiseren met de meegegeven waarden.
@@ -56,11 +56,12 @@ namespace RpgGame.Classes
                     Console.WriteLine("+ Magical Spell(4) - Run(5) +");
                     break;
             }
+
             Console.WriteLine("Choose your command!");
         }
 
         // Verdedigingsmechanisme van de speler.
-        public void DoDefend(Speler player)
+        public void DoDefend(Player user)
         {
             Console.WriteLine("You chose to defend!");
 
@@ -107,10 +108,33 @@ namespace RpgGame.Classes
                 enemy.Health -= damage;
                 Console.WriteLine($"You dealt {damage} damage to {enemy.Name}!");
 
-                if (enemy.Health <= 0)
+                if (user.Health <= 0)
                 {
                     Die(); // Als de gezondheid van de vijand <= 0, speler wint.
                 }
+            }
+        }
+
+    public void InitiateCombat(Speler player, Enemy enemy)
+        {
+            Console.WriteLine("Initiating combat...");
+
+            // Display combat options
+            CombatOptions();
+
+            // Take player input for action choice
+            int choice = Convert.ToInt32(Console.ReadLine());
+
+            // Execute chosen action
+            switch (choice)
+            {
+                case 1:
+                    DoAttack(enemy);
+                    break;
+                case 2:
+                    DoDefend(player);
+                    break;
+                // Implement other cases for special attacks, etc.
             }
         }
 

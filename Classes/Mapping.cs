@@ -1,34 +1,30 @@
-﻿
-
-namespace RpgGame.Classes
+﻿﻿namespace RpgGame.Classes
 {
     public class Mapping
     {
-        // Dictionary die locaties koppelt aan lijsten van vijanden.
+        // Dictionary that maps locations to lists of enemies.
         readonly Dictionary<string, List<Enemy>> locationEnemies;
-        // Lijst met alle beschikbare locaties.
+        // List of all available locations.
         readonly List<string> locations;
-        public Speler user;
+        public Player user;
         public Combat Combat { get; private set; }
         public string CurrentLocation { get; set; }
 
         private Random random = new Random();
 
-        // Geldige inputs voor navigatiecommando's.
+        // Valid inputs for navigation commands.
         private string[] validInputs =
         {
             "Travel", "Cancel", "Forest", "Dungeon", "Valley", "Temple", "Comfy City", "City of Awakening"
         };
 
-        // Constructor initialiseert de klasse met een speler.
-        public Mapping(Speler User)
+        // Constructor initializes the class with a player.
+        public Mapping(Player User)
         {
             user = User;
-            Combat = new Combat(user.Name, user.Class, user.Health, user.Attack, user.AttackChance, user.Defense,
-                user.DefenseChance, user.Heal, user.MinDamage, user.MaxDamage);
             locationEnemies = new Dictionary<string, List<Enemy>>
             {
-                // Initialisatie van vijanden per locatie.
+                // Initialization of enemies per location.
                 {
                     "Comfy City",
                     new List<Enemy>
@@ -72,11 +68,11 @@ namespace RpgGame.Classes
                 },
             };
 
-            // Locatienamen in de lijst opslaan.
+            // Store location names in the list.
             locations = new List<string>(locationEnemies.Keys);
         }
         
-        //Controleert input
+        // Checks input
         private int GetValidInput(int minValue, int maxValue)
         {
             int choice;
@@ -94,7 +90,7 @@ namespace RpgGame.Classes
             }
         }
 
-        // Start het verhaal door de speler uit te nodigen om te reizen.
+        // Starts the story by inviting the player to travel.
         public void StartStory()
         {
             Console.WriteLine("Welcome to ShrekLand");
@@ -103,7 +99,7 @@ namespace RpgGame.Classes
 
         public void Encounter()
         {
-            // Controleert of enemies kunnen spawnen in random formatie dan kan die met 50 procent spawnen
+            // Checks if enemies can spawn in a random format, then they can spawn with a 50% chance
             if (ShouldEncounterEnemies(CurrentLocation))
             {
                 Console.WriteLine($"You encounter enemies in {CurrentLocation}!");
@@ -115,15 +111,15 @@ namespace RpgGame.Classes
         {
             Console.WriteLine("Battle Start!");
 
-            // Loop door de vijanden te spelen
+            // Loop through the enemies to play
             foreach (var enemy in enemies)
             {
                 while (enemy.Health > 0 && user.Health > 0)
                 {
-                    // Enemy valt aan
+                    // Enemy attacks
                     Console.WriteLine($"{enemy.Behaviour} is attacking you.");
 
-                    // Toon gevecht infomatie.
+                    // Show combat information.
                     Console.WriteLine("Combat Options:");
                     Combat.CombatOptions();
 
@@ -132,22 +128,23 @@ namespace RpgGame.Classes
                     switch (choice)
                     {
                         case 1:
-                           //controle for aanval speler 
+                           // Check for player attack 
                             Console.WriteLine("You chose to attack!");
                             Combat.DoAttack(enemy);
                             break;
                         case 2:
-                            //controle for verdedigen speler 
+                            // Check for player defense 
                             Console.WriteLine("You chose to defend!");
                             Combat.DoDefend(user);
                             break;
                         case 3:
-                            //controle for healen speler 
+                            // Check for player healing 
                             Console.WriteLine("You chose to heal!");
                             Console.WriteLine("Health healed");
+                            Combat.DoHeal(user);
                             break;
                         case 4:
-                            //controle for speciale aanval speler 
+                            // Check for player special attack 
                             Console.WriteLine("You chose to perform a special attack!");
                             Combat.DoSpecialAttack(enemy);
                             break;
@@ -156,17 +153,17 @@ namespace RpgGame.Classes
                             break;
                     }
 
-                    // Controleer speler die null is
+                    // Check if the player is null
                     if (user.Health <= 0)
                     {
-                        //dan speler gaat dood en game over met de vijands gedrag o.a naam
+                        // Then the player dies and the game is over with the enemy's behavior, such as name
                         Console.WriteLine($"Game Over! You were defeated by the {enemy.Behaviour}");
                         return;
                     }
                 }
             }
         }
-        // Beheert reisprocessen van de speler tussen locaties.
+        // Manages the player's travel process between locations.
         public void Travel()
         {
             Console.ForegroundColor = ConsoleColor.Green;
@@ -180,33 +177,33 @@ namespace RpgGame.Classes
             {
                 var userInput = Console.ReadLine().Trim().ToLower();
 
-                // Controle voor afbreken om door te reizen
+                // Check for canceling travel
                 if (userInput == "cancel")
                 {
                     Console.WriteLine("Travel canceled.");
                     return;
                 }
 
-                // kijkt voor een nieuwe geldige iput
+                // Looks for a new valid input
                 var selectedLocation = PreprocessInput(userInput);
 
-                // controle of die in de lijst van locaties bevatten
+                // Check if it's in the list of locations
                 if (validInputs.Contains(selectedLocation))
                 {
-                    // op naar de locatie op passen voor enemies!
+                    // Go to the location, watch out for enemies!
                     MoveToLocation(selectedLocation);
 
                     break;
                 }
                 else
                 {
-                    //fout melding
+                    // Error message
                     Console.BackgroundColor = ConsoleColor.Red;
                     Console.WriteLine("Invalid location. Please enter more specific initials or 'cancel' to cancel.");
                     Console.ResetColor();
                 }
             }
-            // Controleren of de speler in de locatie een kans heeft om de vijand te vechten
+            // Check if the player has a chance to fight the enemy in the location
             if (ShouldEncounterEnemies(CurrentLocation))
             {
                 Console.WriteLine($"You encounter enemies in {CurrentLocation}!");
@@ -218,10 +215,10 @@ namespace RpgGame.Classes
         {
             Console.WriteLine($"Moving to {selectedLocation}...");
 
-            // Update de huidige locatie
+            // Update the current location
             CurrentLocation = selectedLocation;
 
-            // controleert de speler nog een kans om te vechten
+            // Check if the player still has a chance to fight
             if (ShouldEncounterEnemies(selectedLocation))
             {
                 Console.WriteLine($"You encounter enemies in {selectedLocation}!");
@@ -229,11 +226,11 @@ namespace RpgGame.Classes
             }
             else
             {
-                // Anders gaat de spel door 
+                // Otherwise the game continues
                 ExamineLocation(selectedLocation);
             }
         }
-        // methode voor output als de speler door wilt gaan 
+        // Method for output if the player wants to continue
         
         private void ExamineLocation(string location)
         {

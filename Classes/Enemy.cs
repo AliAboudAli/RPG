@@ -41,10 +41,6 @@ namespace RpgGame.Classes
                 {
                     Console.WriteLine($"{Name} has died."); // Karakter is gestorven.
                 }
-                else
-                {
-                    Console.WriteLine($"{Name} has {Health} health left."); // Weergeeft overgebleven gezondheid.
-                }
             }
         }
 
